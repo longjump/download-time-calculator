@@ -1,0 +1,928 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Download time calculator</title>
+<!-- Favicon
+<link rel="icon" type="image/png" href="favicon.png" />
+-->
+
+<meta name="viewport" content="user-scalable=yes, width=630"/>
+<meta name="format-detection" content="telephone=no">
+
+<!--
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="apple-touch-startup-image" href="startup_320x460.png" />
+
+<link rel="apple-touch-icon" href="touch-icon-iphone.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="touch-icon-ipad.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="touch-icon-iphone-retina.png" />
+<link rel="apple-touch-icon" sizes="144x144" href="touch-icon-ipad-retina.png" />
+-->
+
+<!-- External Style Sheet
+<link rel="stylesheet" href="style.css" type="text/css" charset="utf-8">
+-->
+
+<style type="text/css">
+/* CSS GOES HERE */
+window,body{
+	width: 100%;
+	height: 100%;
+}
+body{
+	font-family: Helvetica, Arial, sans-serif;
+	background-color: #f8f8f8;
+}
+
+.content{
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+	width: 600px;
+}
+h1,h2,h3,h4{
+	color: #444;
+}
+
+.content #speed,
+.content #file,
+.content #results,
+.content #downloadSimulatorWindow_{
+	margin-bottom: 20px;
+	border: 1px solid red;
+	
+	border: 1px solid gray;
+	border-radius: 3px;
+	
+	background-color: #EEE;
+	box-shadow: 0px 2px 3px rgba(0,0,0,0.5);
+	
+}
+
+input, button{
+	font-size: 16pt;
+}
+
+
+
+#speed {
+	text-align: center;
+}
+#speed input{
+	font-size: 16pt;
+	text-align: right;
+}
+#speed .idkSpeed{
+	font-size: 8pt;
+}
+#speed .idkSpeed.mobile{
+	font-size: 11pt;
+}
+.overhead-p{
+	font-size: 8pt;
+}
+
+#file{
+	text-align: center;
+}
+#file input{
+	font-size: 16pt;
+	text-align: right;
+}
+.examples-p{
+	font-size: 8pt;
+}
+
+
+#results{
+	background-color: #FFF !important;
+	text-align: center;
+	
+	visibility: hidden;
+}
+#results .time{
+	font-style:normal;
+	font-size:24px;
+}
+#results .time em{
+	font-style:normal;
+	font-size:32px;
+}
+
+
+#downloadSimulatorWindow {
+	position: relative;
+	width: 600px;
+	height: 99px;
+
+	-color: gray;
+	opacity: 0.5;
+	/*
+	border: 1px solid gray;
+	border-radius: 5px;
+	
+	visibility: hidden;
+	box-shadow: 0px 1px 16px rgba(0,0,0,0.5);
+	*/
+}
+#downloadSimulatorWindow .filename {
+	position: absolute;
+	left: 85px;
+	top: 18px;
+	width: 355px;
+	height: 15px;
+}
+#downloadSimulatorWindow .progresrbar {
+    position: absolute;
+    left: 85px;
+    top: 38px;
+    width: 398px;
+    height: 22px;
+}
+#downloadSimulatorWindow progress{
+    width: 100%;
+}
+#downloadSimulatorWindow .percent {
+    position: absolute;
+    left: 435px;
+    top: 15px;
+    width: 49px;
+    height: 17px;
+    	
+    text-align: right;
+}
+#downloadSimulatorWindow .details {
+    position: absolute;
+    left: 85px;
+    top: 63px;
+    width: 401px;
+    height: 19px;
+    
+    padding-left: 0.5em;
+    font-size: 14px;
+}
+#downloadSimulatorWindow .icon {
+	position: absolute;
+	left: 10px;
+	top: 18px;
+	width: 64px;
+	height: 64px;
+}
+#downloadSimulatorWindow .ps {
+	position: absolute;
+	right: 0px;
+	bottom: -20px;
+	width: 514px;
+	height: 18px;
+	
+	font-size: 10px;
+	text-align: right;
+}
+
+.footer{
+	text-align: center;
+	font-size: 9pt;
+	padding: 1em;
+}
+
+
+#calculateButton{
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+/*****/
+#speedtest_mobile{
+	display: none;
+
+	margin: 30px;
+	background: #333;
+	color: #FFF;
+}
+#speedtest_mobile a{
+	color: #FFF;
+	margin:20px;
+}
+/*
+.mobile-iphone-btn,
+.mobile-windows-btn,
+.mobile-android-btn,
+.mobile-amazon-btn{
+	width: 230px;
+	height: 74px;
+	background: url(http://www.speedtest.net/mobile/../images/app-store-sprite.png);
+	background-position: 0px -2px;
+	display: block;
+	-float: left;
+	display: inline-block;
+}
+
+.mobile-iphone-btn{
+	background-position: 0px -2px;
+}
+.mobile-windows-btn{
+	background-position: 245px -2px;
+}
+.mobile-android-btn{
+	background-position: 483px -2px;
+}
+.mobile-amazon-btn{
+	background-position: 0 -2px;
+	background: url(http://www.speedtest.net/mobile/../images/app-store-amazon.png);
+}
+*/
+
+.speedtest-mobile-ico{
+	width: 124px;
+	height: 124px;
+	background-image: url(http://www.speedtest.net/mobile/../images/placeholder-mobile-header.png);
+	-webkit-background-size: 124px 124px;
+	-moz-background-size: 124px 124px;
+	background-size: 124px 124px;
+	background-repeat: no-repeat;
+	width: 70px;
+	height: 70px;
+	-webkit-background-size: 70px 70px;
+	-moz-background-size: 70px 70px;
+	background-size: 70px 70px;
+	-float: left;
+	margin-left: 8px;
+	margin-right: 15px;
+
+	-float: left;
+	margin-left: 50px;
+	margin-top: 35px;
+
+	display: inline-block;
+}
+
+/******/
+.collapse{
+	font-size: 8pt;
+	display: block;
+	line-height: 44px;
+	
+	color: gray;
+}
+.collapse:hover{
+	color: white;
+	-background-color: #FCFCFC;
+}
+.collapse + input{
+  display:none;
+}
+.collapse + input + div{
+  display:none;
+}
+.collapse+ input:checked + div{
+  display:block;
+}
+
+</style>
+<script src="moment.min.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div class="content"> 
+
+    <h1>Download time calculator</h1>
+	<h3>How long will take to download this?</h3>
+	
+	<form onsubmit="return false">
+	<div id="speed">
+		<h3>How fast is your connection speed?</h3>
+		
+		<div id="speedtest">
+			<embed align="middle" allowscriptaccess="always" height="250" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high" src="http://www.speedtest.net/mini/speedtest.swf" type="application/x-shockwave-flash" width="450"></embed>
+		</div>
+		
+		<p>
+			<label for="internetSpeed">Download Speed</label>
+			<input id="internetSpeed" type="number" min="0" step="0.01" value="10" placeholder="Download speed" autofocus>
+			
+			<input id="internetSpeed_p" type="button" value="+" onclick="internetSpeed.value = (parseInt(internetSpeed.value)+1).toFixed(2)">
+			<input id="internetSpeed_p" type="button" value="-" onclick="internetSpeed.value = (parseInt(internetSpeed.value)-1).toFixed(2)">
+			
+			<select id="internetSpeedBase">
+				<option value="10^3">Kbps</option>
+				<option value="10^6" selected>Mbps</option>
+			</select>
+		</p>
+		
+		<p class="idkSpeed"><a id="speedtestLink" href="http://speedtest.net" target="new">I don't know my internet speed</a></p>
+		
+		<div>
+			<label class="collapse" for="_1">▼</label>
+		  	<input id="_1" type="checkbox">
+		  	<div>
+				<p class="overhead-p"><label for="internetOverhead">Overhead</label>
+					<select id="internetOverhead">
+						<option value="1" selected>None</option>
+						<option value="0.99">1%</option>
+						<option value="0.95">5%</option>
+						<option value="0.9">10% (Tipical TCP overhead)</option>
+						<option value="0.85">15%</option>
+						<option value="0.8">20%</option>
+						<option value="0.75">25%</option>
+						<option value="0.7">30%</option>
+						<option value="0.6">40%</option>
+						<option value="0.5">50%</option>
+						<option value="0.4">60%</option>
+						<option value="0.3">70%</option>
+						<option value="0.2">80%</option>
+						<option value="0.1">90%</option>
+						<option value="0.05">95%</option>
+						<option value="0.01">99%</option>
+					</select>
+					<a href="#" onClick="alert('If you just measured your internet speed, you don\'t need to change this.\n\nBut if enter your contracted speed e.g. 10Mbps, keep in mind this value is a teorical maximum, there will always be overhead.\nFor a conservative value use 10% (tipical TCP overhead) or for more realistic results use 20%.')">Help</a>
+				</p>
+			</div>
+		</div>	
+	</div>
+	
+	<div id="file">
+		<h3>What is the size of what you want to download?</h3>
+		<p> 
+			<label for="fileSize">Size</label>
+			<input type="number" id="fileSize" value="1" step="0.01" min="0">
+			<input id="internetSpeed_p" type="button" value="+" onclick="fileSize.value = (parseInt(fileSize.value)+1).toFixed(2)">
+			<input id="internetSpeed_p" type="button" value="-" onclick="fileSize.value = (parseInt(fileSize.value)-1).toFixed(2)">
+			<select id="fileSizeBase">
+				<option value="2^10">KB (KiloBytes)</option>
+				<option value="2^20" selected>MB (MegaBytes)</option>
+				<option value="2^30">GB (GigaBytes)</option>
+				<option value="2^40">TB (TeraBytes)</option>
+			</select>
+		</p>
+		
+		<p class="examples-p" style="display:none"> 
+			<label for="fileSizeEx">Examples</label>
+			<select id="fileSizeEx">
+				<option></option>
+				<optgroup label="iTunes Store">
+					<option value="4">4-minute song</option>
+					<option value="30">5-minute video</option>
+					<option value="110">9-hour audiobook</option>
+					<option value="200">45-minute TV show</option>
+					<option value="600">45-minute HDTV show</option>
+					<option value="1.5">2-hour SD movie</option>
+					<option value="4">2-hour HD movie</option>
+					<option value="40">iPod Game</option>
+				</optgroup>
+				<optgroup label="Playstation Network">
+					<option value="9">PS3 Game</option>
+					<option value="24">PS4 Game</option>
+				</optgroup>
+				<option value=""></option>
+				<option value=""></option>
+				<option value=""></option>
+			</select>
+		</p>
+		
+		<p>
+			<button id="calculateButton">Calculate</button>
+		</p>
+	</div>
+	
+	</form>
+	
+	<div id="results">
+		<div id="results_inner">
+			<p class="time">0</p>
+			<p class="">to transfer <span class="size"></span> </p>
+			<p class="">at <span class="speed"></span>/sec</p>
+		</div>
+		
+		<hr>
+
+		<div id="downloadSimulatorWindow">
+			<div class="filename">Simulation</div>
+			<div class="icon"></div>
+			
+			<div class="percent"></div>
+			<div class="progresrbar"><progress max="100" value="0"></progress></div>
+			
+			<div class="details">
+				<span class="downloaded"></span> of <span class="size"></span> (<span class="speed"></span>/sec) <span> - </span> <span class="remaining"></span> remaining
+			</div>
+			<div class="ps">* this is not an actual transfer, this is just a simulation of how much time it would take</div>
+		</div>
+	</div>
+
+    <div class="footer">
+		
+		<a href="#">Download-Calc</a>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+/* JAVASCRIPT GOES HERE */
+
+var downloadSimulator = null;
+
+window.onload=function(){
+
+	//console.log("Loaded!");
+
+	calculateButton.onclick = calc;
+	
+	var hasFlash = function() {
+
+		if(typeof navigator.plugins == "undefined" || navigator.plugins.length == 0){
+			try{
+				return !!(new ActiveXObject("ShockwaveFlash.ShockwaveFlash"));
+			}
+			catch(e){
+				return undefined;
+			}
+		}
+		else{
+			return navigator.plugins["Shockwave Flash"];
+		}
+	};
+
+	if(!hasFlash()){
+		speedtest.style.display = 'none';
+		speedtestLink.innerHTML = "Test my internet speed";
+		document.querySelector('.idkSpeed').classList.add("mobile");
+	}
+
+	downloadSimulator = new Downloader(document.getElementById('downloadSimulatorWindow'));
+	
+	if(window.location.hash){
+		var uri = window.location.hash;
+		internetSpeed.value = uri.match(/speed=([\d.]+)x(\d+\^\d+)/)[1];
+		internetSpeedBase.value = uri.match(/speed=([\d.]+)x(\d+\^\d+)/)[2];
+		internetOverhead.value = uri.match(/overhead=([\d.]+)/)[1];
+		
+		fileSize.value = uri.match(/file=([\d.]+)x(\d+\^\d+)/)[1];
+		fileSizeBase.value = uri.match(/file=([\d.]+)x(\d+\^\d+)/)[2];
+		
+		calc();
+	}
+	else if(window.localStorage){
+		if(window.localStorage.getItem('downloadtime.speed')){
+			internetSpeed.value = window.localStorage.getItem('downloadtime.speed');
+			internetSpeedBase.value = window.localStorage.getItem('downloadtime.speedBase');
+			internetOverhead.value = window.localStorage.getItem('downloadtime.overhead');
+			fileSize.value = window.localStorage.getItem('downloadtime.file');
+			fileSizeBase.value = window.localStorage.getItem('downloadtime.fileBase');
+		}
+		else defaults();
+	}
+	else defaults();
+
+	
+
+	/*document.getElementsByTagName("form")[0].onsubmit = function(e){
+
+		if (e.stopPropagation) e.stopPropagation();
+	    else e.cancelBubble = true;
+	    if (e.preventDefault) e.preventDefault();
+	    else e.returnValue = false;
+		this.returnValue = false;
+
+		calc();
+
+		return false;
+	}*/
+
+
+};
+
+function defaults(){
+	internetSpeed.value = "10";
+	internetSpeedBase.value = "10^6";
+	internetOverhead.value = "0.9";
+	fileSize.value = "1";
+	fileSizeBase.value = "2^30";
+}
+
+function calc(){
+
+	//console.log("Calc");
+	
+	// Internet speed
+	
+	var internet = {
+		speed: internetSpeed.value,
+		factor: internetSpeedBase.value,
+		overhead: internetOverhead.value,
+	}
+	
+	internet.speed = parseFloat(internet.speed);
+	internet.overhead = parseFloat(internet.overhead);
+	internet.factor = {
+		base: internet.factor.match(/(\d+)\^(\d+)/)[1],
+		power: internet.factor.match(/(\d+)\^(\d+)/)[2]
+	}
+	
+	internet.bitsPerSec = internet.speed * Math.pow(internet.factor.base, internet.factor.power);
+	internet.bytesPerSec = internet.bitsPerSec/8;
+	
+	//File size
+	
+	var file = {
+		size: fileSize.value,
+		factor:	fileSizeBase.value,
+	}
+	
+	file.size = parseFloat(file.size);
+	file.factor = {
+		base: file.factor.match(/(\d+)\^(\d+)/)[1],
+		power: file.factor.match(/(\d+)\^(\d+)/)[2]
+	}
+	file.bytes = file.size * Math.pow(file.factor.base, file.factor.power);
+	
+	//speed
+	internet.effectiveBytesPerSec = internet.bytesPerSec * internet.overhead;
+	
+	//download time in milliseconds
+	var transferTime_ms = (file.bytes/internet.effectiveBytesPerSec)*1000;
+	
+	
+	//Show results
+	document.querySelector("#results .time").innerHTML = moment.preciseDiff(0, transferTime_ms);
+	document.querySelector("#results .size").innerHTML = prefixByteLong(file.bytes);
+	document.querySelector("#results .speed").innerHTML = prefixByte(internet.effectiveBytesPerSec);
+	
+	document.getElementById("results").style.visibility = "visible";
+	document.getElementById("downloadSimulatorWindow").style.visibility = "visible";
+	
+	downloadSimulator.start(file.bytes, internet.effectiveBytesPerSec, "Simulation");
+	
+	if(window.location){
+		var uri=[];
+		uri.push("file="+fileSize.value+"x"+fileSizeBase.value);
+		uri.push("speed="+internetSpeed.value+"x"+internetSpeedBase.value);
+		uri.push("overhead="+internetOverhead.value);
+		window.location.hash = uri.join("&");
+	}
+	
+	if(window.localStorage){		
+		window.localStorage.setItem('downloadtime.speed', internetSpeed.value);
+		window.localStorage.setItem('downloadtime.speedBase', internetSpeedBase.value);
+		window.localStorage.setItem('downloadtime.overhead', internetOverhead.value);
+		window.localStorage.setItem('downloadtime.file', fileSize.value);
+		window.localStorage.setItem('downloadtime.fileBase', fileSizeBase.value);
+	}
+	
+	/*
+	
+	var t = msToTime(transferTime);
+	console.log(t);
+	str = [];
+	
+	if(t.years >= 1) str.push( t.years + " year" + (t.years>=2?"s":"") );
+	if(t.months >= 1) str.push( t.months + " month" + (t.months>=2?"s":"") );
+	if(t.weeks >= 1) str.push( t.weeks + " week" + (t.weeks>=2?"s":"") );
+	if(t.days >= 1) str.push( t.days + " day" + (t.days>=2?"s":"") );
+	if(t.hours >= 1) str.push( t.hours + " hour" + (t.hours>=2?"s":"") );
+	if(t.minutes >= 1) str.push( t.minutes + " minute" + (t.minutes>=2?"s":"") );
+	if(t.seconds >= 1) str.push( t.seconds + " second" + (t.seconds>=2?"s":"") );
+	if(t.ms >= 1) str.push( t.ms + " ms" );
+	
+	//time.innerHTML = str.join(", ")+".";
+	
+	//time.innerHTML = moment.duration(transferTime).humanize();
+	
+	*/
+
+}
+
+
+function msToTime(ms) {
+	
+	debugger;;
+	
+	var t={};
+	
+	t.ms = ms % 1000;
+	ms = (ms - t.ms) / 1000;
+	
+	t.seconds = ms % 60;
+	ms = (ms - t.seconds) / 60;
+	
+	t.minutes = ms % 60;
+	ms = (ms - t.minutes) / 60;
+	
+	t.hours = ms % 60;
+	ms = (ms - t.hours) / 60;
+	
+	t.days = ms % 24;
+	ms = (ms - t.days) / 24;
+	
+	t.weeks = ms % 7;  
+	ms = (ms - t.weeks) / 7;
+	
+	t.months = ms % ((365/12)/7);
+	ms = (ms - t.months) / ((365/12)/7);
+	
+	t.years = ms % (365/12);
+	ms = (ms - t.years) / (365/12);
+	
+	console.log(JSON.stringify(t));
+	
+	return t;
+}
+
+
+
+(function(moment) {
+    var STRINGS = {
+        nodiff: '',
+        year: 'year',
+        years: 'years',
+        month: 'month',
+        months: 'months',
+        day: 'day',
+        days: 'days',
+        hour: 'hour',
+        hours: 'hours',
+        minute: 'minute',
+        minutes: 'minutes',
+        second: 'second',
+        seconds: 'seconds',
+        delimiter: ' '
+    };
+    moment.fn.preciseDiff = function(d2) {
+        return moment.preciseDiff(this, d2);
+    };
+    moment.preciseDiff = function(d1, d2) {
+        var m1 = moment(d1), m2 = moment(d2);
+        if (m1.isSame(m2)) {
+            return STRINGS.nodiff;
+        }
+        if (m1.isAfter(m2)) {
+            var tmp = m1;
+            m1 = m2;
+            m2 = tmp;
+        }
+
+        var yDiff = m2.year() - m1.year();
+        var mDiff = m2.month() - m1.month();
+        var dDiff = m2.date() - m1.date();
+        var hourDiff = m2.hour() - m1.hour();
+        var minDiff = m2.minute() - m1.minute();
+        var secDiff = m2.second() - m1.second();
+
+        if (secDiff < 0) {
+            secDiff = 60 + secDiff;
+            minDiff--;
+        }
+        if (minDiff < 0) {
+            minDiff = 60 + minDiff;
+            hourDiff--;
+        }
+        if (hourDiff < 0) {
+            hourDiff = 24 + hourDiff;
+            dDiff--;
+        }
+        if (dDiff < 0) {
+            var daysInLastFullMonth = moment(m2.year() + '-' + (m2.month() + 1), "YYYY-MM").subtract('months', 1).daysInMonth();
+            if (daysInLastFullMonth < m1.date()) { // 31/01 -> 2/03
+                dDiff = daysInLastFullMonth + dDiff + (m1.date() - daysInLastFullMonth);
+            } else {
+                dDiff = daysInLastFullMonth + dDiff;
+            }
+            mDiff--;
+        }
+        if (mDiff < 0) {
+            mDiff = 12 + mDiff;
+            yDiff--;
+        }
+
+        function pluralize(num, word) {
+            return num + ' ' + STRINGS[word + (num === 1 ? '' : 's')];
+        }
+        var result = [];
+
+        if (yDiff) {
+            result.push(pluralize(yDiff, 'year'));
+        }
+        if (mDiff) {
+            result.push(pluralize(mDiff, 'month'));
+        }
+        if (dDiff) {
+            result.push(pluralize(dDiff, 'day'));
+        }
+        if (hourDiff) {
+            result.push(pluralize(hourDiff, 'hour'));
+        }
+        if (minDiff) {
+            result.push(pluralize(minDiff, 'minute'));
+        }
+        if (secDiff) {
+            result.push(pluralize(secDiff, 'second'));
+        }
+
+        return result.join(STRINGS.delimiter);
+    };
+}(moment));
+	
+	
+	
+
+
+
+/* Download Simulation Class */
+function Downloader(elm){
+	
+	var self = this;
+	
+	this.fileSize;
+	this.speed;
+	
+	this.DOM = {
+		progress: elm.querySelector('progress'),
+		percent: elm.querySelector('.percent'),
+		downloaded: elm.querySelector('.downloaded'),
+		details: elm.querySelector('.details'),
+		size: elm.querySelector('.size'),
+		speed: elm.querySelector('.speed'),
+		remaining: elm.querySelector('.remaining'),
+		
+		filename: elm.querySelector('.filename')
+	}
+	
+	var _transferTime;
+	var _startTime;
+	var _elapsedTime;
+	var _remainingTime;
+	var _downloaded;
+	var _percent;
+	
+	var _timer;
+
+	this.start = function(fileSize, speed, filename){
+		
+		this.DOM.filename.innerHTML = filename;
+		
+		clearInterval(_timer);
+		
+		_startTime = Date.now();
+		_downloaded = 0;
+		_percent = 0;
+		
+		self.fileSize = fileSize;
+		self.speed = speed;
+		
+		_transferTime = (fileSize / speed)*1000;
+		
+		this.DOM.details.style.display = "";
+
+		self.update();
+		_timer = setInterval(function(){self.update()},500);
+	}
+		
+	this.update = function(){
+		var now = Date.now();
+		
+		_elapsedTime = now - _startTime;
+		_remainingTime = _transferTime - _elapsedTime;
+		_percent = (_elapsedTime / _transferTime) * 100;
+		_downloaded = this.fileSize * (_elapsedTime / _transferTime);
+		
+		this.DOM.progress.value = _percent;
+		this.DOM.percent.innerHTML = (_percent<<0) + "%";
+		this.DOM.downloaded.innerHTML = prefixByte(_downloaded);
+		this.DOM.size.innerHTML = prefixByte(this.fileSize);
+		this.DOM.speed.innerHTML = prefixByte(this.speed);
+		this.DOM.remaining.innerHTML = moment.duration(_remainingTime).humanize();
+		
+		if(_elapsedTime>=_transferTime){
+			this.stop();
+		}
+	}
+	
+	this.stop = function(){
+		
+		clearInterval(_timer);
+		
+		_elapsedTime = -1;
+		_remainingTime = 0;
+		_percent = 100;
+		_downloaded = this.fileSize;
+		
+		this.DOM.progress.value = 100;
+		this.DOM.percent.innerHTML = "100%";
+		this.DOM.downloaded.innerHTML = prefixByte(this.fileSize);
+
+		
+		this.DOM.size.innerHTML = prefixByte(this.fileSize);
+		this.DOM.speed.innerHTML = prefixByte(this.speed);
+		this.DOM.remaining.innerHTML = "0";
+		
+
+		this.DOM.details.style.display = "none";
+	}
+
+}
+
+
+
+/** Prefixer Constructor */
+function Prefixer(unit, prefix, format){
+	
+	for(var i=0; i<prefix.length; i++){
+		prefix[i][4] = Math.pow(prefix[i][0], prefix[i][1]);
+	}
+	
+	return function(x){
+		x=parseFloat(x);
+		var r, n=x<0?-1:1;
+		
+		x = x*n;
+		for(var i=0; i<prefix.length; i++){
+			if(x>=prefix[i][4]-1){
+				r = prefix[i];
+			}
+			else break;
+		}
+		x = x*n;
+		x = (x/r[4]);
+		
+		var obj = {
+			value: x,
+			symbol: r[2],
+			prefix: r[3],
+			base: r[0],
+			factor: r[1],
+			plural: x!=1?true:false,
+			s: x!=1?"s":"",
+			unit: unit,
+			units: x!=1?unit+"s":unit
+		};
+		return format?format.apply(obj):obj;
+	}
+}
+
+var prefixByte = new Prefixer("B",[
+		[2,  0, '', ''],
+		[2, 10, 'K', 'Kilo'],
+		[2, 20, 'M', 'Mega'],
+		[2, 30, 'G', 'Giga'],
+		[2, 40, 'T', 'Tera'],
+		[2, 50, 'P', 'Peta'],
+		[2, 60, 'E', 'Exa'],
+		[2, 70, 'Z', 'Zetta'],
+		[2, 80, 'Y', 'Yotta']
+	], function(){
+		return parseFloat(this.value.toFixed(2))+" "+this.symbol+this.unit;
+	}
+);
+
+var prefixByteLong = new Prefixer("byte",[
+		[2,  0, '', ''],
+		[2, 10, 'K', 'Kilo'],
+		[2, 20, 'M', 'Mega'],
+		[2, 30, 'G', 'Giga'],
+		[2, 40, 'T', 'Tera'],
+		[2, 50, 'P', 'Peta'],
+		[2, 60, 'E', 'Exa'],
+		[2, 70, 'Z', 'Zetta'],
+		[2, 80, 'Y', 'Yotta']
+	], function(){
+		return parseFloat(this.value.toFixed(2))+" "+this.prefix+this.units;
+	}
+);
+
+var prefixBit = new Prefixer("bit",[
+		[10,  0, '', ''],
+		[10,  3, 'K', 'Kilo'],
+		[10,  6, 'M', 'Mega'],
+		[10,  9, 'G', 'Giga'],
+		[10, 12, 'T', 'Tera'],
+		[10, 15, 'P', 'Peta'],
+		[10, 18, 'E', 'Exa'],
+		[10, 21, 'Z', 'Zetta'],
+		[10, 24, 'Y', 'Yotta']
+	], function(){
+		return this.value+" "+this.symbol+this.unit;
+	}
+);
+
+var prefixBitLong = new Prefixer("bit",[
+		[10,  0, '', ''],
+		[10,  3, 'K', 'Kilo'],
+		[10,  6, 'M', 'Mega'],
+		[10,  9, 'G', 'Giga'],
+		[10, 12, 'T', 'Tera'],
+		[10, 15, 'P', 'Peta'],
+		[10, 18, 'E', 'Exa'],
+		[10, 21, 'Z', 'Zetta'],
+		[10, 24, 'Y', 'Yotta']
+	], function(){
+		return this.value+" "+this.prefix+this.units;
+	}
+);
+
+
+</script>
+  
+</body>
+</html>
